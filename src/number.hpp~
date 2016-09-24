@@ -1,0 +1,18 @@
+#ifndef NUMBER_HPP
+#define NUMBER_HPP
+
+#include <memory>
+
+class Number
+{
+private:
+    std::unique_ptr<int[]> mDigits;
+    int mSigFigs;
+public:
+    Number();
+    bool operator==( Number const& rhs );
+    bool operator!=( Number const& rhs );
+    int FindSigFigs();
+};
+
+#endif

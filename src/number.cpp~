@@ -1,0 +1,30 @@
+#include "number.hpp"
+#include <iostream>
+
+#define PRECISION 2048
+
+// calling default constructor on int initializes all  2048 integers to 0
+Number::Number()
+    :mDigits( new int[PRECISION]() ), mSigFigs()
+{
+}
+
+bool Number::operator==( Number const& rhs )
+{
+    for( int i = 0; i < PRECISION; ++i )
+	if( mDigits[i] != rhs.mDigits[i] )
+	    return false;
+    return true;
+}
+
+bool Number::operator!=( Number const& rhs )
+{
+    return !( *this == rhs );
+}
+
+int Number::FindSigFigs()
+{
+    for( int i = PRECISION - 1; i > 0; --i )
+	if( mDigits[i] != 0 )
+	    return i;
+}
