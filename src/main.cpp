@@ -7,8 +7,9 @@ int main()
 {
     Number n;
     n = 1;
-    n << 7;
-    std::cout << n.FindSigFigs() << std::endl;
+    n << 2;
+    n.Print();
+    n >> 2;
     n.Print();
     return 0; 
 }

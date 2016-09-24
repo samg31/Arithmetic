@@ -19,6 +19,10 @@ public:
     //assignment operator that takes an int and converts into a bit array
     Number& operator=( int rhs );
     Number& operator<<( int rhs );
+    Number& operator>>( int rhs );
+
+    // ARITHMETIC OPERATORS
+    Number& operator+=( const Number& rhs );
 
     // CONST OPERATORS
     bool operator==( Number const& rhs ) const;

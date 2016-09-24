@@ -6,7 +6,7 @@
 
 #define PRECISION 2048
 
-// calling default constructor on int initializes all  2048 integers to 0
+// calling default constructor on int initializes all 2048 integers to 0
 Number::Number()
     :mDigits( new int[PRECISION]() ), mSigFigs()
 {
@@ -36,6 +36,25 @@ Number& Number::operator<<( int rhs )
 	PushFront( 0 );
 	--rhs;
     }
+}
+
+Number& Number::operator>>( int rhs )
+{
+    while( rhs )
+    {
+	int SigBit = FindSigFigs();
+	for( int i = 0; i < SigBit; ++i )
+	{
+	    mDigits[i] = mDigits[i + 1];
+	}
+	mDigits[SigBit - 1] = 0;
+	--rhs;
+    }
+}
+
+Number& operator+=( const Number& rhs )
+{
+    
 }
 
 bool Number::operator==( Number const& rhs ) const
@@ -92,6 +111,8 @@ int Number::FindSigFigs() const
 
 void Number::PushFront( int bit )
 {
+    assert( bit == 0 || bit == 1 );
+    
     for( int i = FindSigFigs() - 1; i >= 0; --i )
 	mDigits[i + 1] = mDigits[i];
     mDigits[0] = bit;
