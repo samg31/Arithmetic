@@ -6,11 +6,9 @@
 int main()
 {
     Number n;
-    Number m;
-    n = 128;
-    m = 127;
-    std::cout << (m > n) << std::endl;
-    std::cout << (m >= n) << std::endl;
-    std::cout << (m < n) << std::endl;
-    std::cout << (m <= n) << std::endl;
+    n = 1;
+    n << 7;
+    std::cout << n.FindSigFigs() << std::endl;
+    n.Print();
+    return 0; 
 }

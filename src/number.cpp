@@ -1,10 +1,10 @@
 //Sam Goodrick sdg31@zips.uakron.edu
 
 #include "number.hpp"
-#include <algorithm>
 #include <iostream>
+#include <cassert>
 
-constexpr int PRECISION = 2048;
+#define PRECISION 2048
 
 // calling default constructor on int initializes all  2048 integers to 0
 Number::Number()
@@ -33,7 +33,7 @@ Number& Number::operator<<( int rhs )
 {
     while( rhs )
     {
-	
+	PushFront( 0 );
 	--rhs;
     }
 }
@@ -53,8 +53,8 @@ bool Number::operator!=( Number const& rhs ) const
 
 bool Number::operator>( Number const& rhs ) const
 {
-    int lSigBit = FindSigFigs();
-    int rSigBit = rhs.FindSigFigs();
+    int lSigBit = FindSigFigs() - 1;
+    int rSigBit = rhs.FindSigFigs() - 1;
 
     if( lSigBit > rSigBit )
 	for( int i = lSigBit; i > 0; --i )
@@ -85,7 +85,21 @@ bool Number::operator<=( Number const& rhs ) const
 
 int Number::FindSigFigs() const
 {
-    for( int i = PRECISION - 1; i > 0; --i )
+    for( int i = PRECISION - 1; i >= 0; --i )
 	if( mDigits[i] != 0 )
-	    return i;
+	    return i + 1;
+}
+
+void Number::PushFront( int bit )
+{
+    for( int i = FindSigFigs() - 1; i >= 0; --i )
+	mDigits[i + 1] = mDigits[i];
+    mDigits[0] = bit;
+}
+
+void Number::Print() const
+{
+    for( int i = FindSigFigs(); i >= 0; --i )
+	std::cout << mDigits[i];
+    std::cout << std::endl;
 }
