@@ -5,11 +5,10 @@
 
 int main()
 {
-    Number n;
-    n = 1;
-    n << 2;
-    n.Print();
-    n >> 2;
+    Number n, m;
+    n = 12;
+    m = 2;
+    n -= m;
     n.Print();
     return 0; 
 }

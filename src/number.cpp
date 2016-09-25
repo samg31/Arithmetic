@@ -2,13 +2,14 @@
 
 #include "number.hpp"
 #include <iostream>
+#include <algorithm>
 #include <cassert>
 
 #define PRECISION 2048
 
 // calling default constructor on int initializes all 2048 integers to 0
 Number::Number()
-    :mDigits( new int[PRECISION]() ), mSigFigs()
+    :mDigits( new unsigned int[PRECISION]() ), mSigFigs()
 {
 }
 
@@ -52,9 +53,59 @@ Number& Number::operator>>( int rhs )
     }
 }
 
-Number& operator+=( const Number& rhs )
+Number& Number::operator+=( const Number& rhs )
 {
-    
+    int carry = 0;
+    int lSigBit = FindSigFigs();
+    int rSigBit = rhs.FindSigFigs();
+
+    int i;
+    for( i = 0; i < std::max( lSigBit, rSigBit ); ++i )
+    {
+	int temp = mDigits[i] + rhs.mDigits[i] + carry;
+	if( temp < mBase )
+	    mDigits[i] = temp;
+	else if( temp == mBase )
+	{
+	    mDigits[i] = 0;
+	    carry = 1;
+	}
+	else if( temp > mBase )
+	{
+	    mDigits[i] = mBase - temp;
+	    carry = temp / mBase;
+	}
+    }
+    mDigits[i] = carry;
+
+    return *this;
+}
+
+Number& Number::operator-=( const Number& rhs )
+{
+    int lSigBit = FindSigFigs();
+    int rSigBit = rhs.FindSigFigs();
+    int borrow = 0;
+
+    for( int i = 0; i < std::max( lSigBit, rSigBit ); ++i )
+    {
+	if( mDigits[i] > rhs.mDigits[i] )
+	{
+	    mDigits[i] = mDigits[i] - rhs.mDigits[i];
+	}
+	else if( mDigits[i] == rhs.mDigits[i] )
+	{
+	    mDigits[i] = 0;
+	}
+	else
+	{
+	    borrow = mDigits[i+1];
+	    --mDigits[i+1];
+	    mDigits[i] += borrow * mBase;
+	    mDigits[i] -= rhs.mDigits[i];
+	    borrow = 0;
+	}
+    }
 }
 
 bool Number::operator==( Number const& rhs ) const

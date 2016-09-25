@@ -8,8 +8,9 @@
 class Number
 {
 private:
-    std::unique_ptr<int[]> mDigits;
+    std::unique_ptr<unsigned int[]> mDigits;
     int mSigFigs;
+    const int mBase = 2;
 public:
     // CONSTRUCTORS
     Number();
@@ -23,6 +24,7 @@ public:
 
     // ARITHMETIC OPERATORS
     Number& operator+=( const Number& rhs );
+    Number& operator-=( const Number& rhs );
 
     // CONST OPERATORS
     bool operator==( Number const& rhs ) const;
