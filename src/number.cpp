@@ -65,12 +65,7 @@ Number& Number::operator+=( const Number& rhs )
 	int temp = mDigits[i] + rhs.mDigits[i] + carry;
 	if( temp < mBase )
 	    mDigits[i] = temp;
-	else if( temp == mBase )
-	{
-	    mDigits[i] = 0;
-	    carry = 1;
-	}
-	else if( temp > mBase )
+	else
 	{
 	    mDigits[i] = mBase - temp;
 	    carry = temp / mBase;
