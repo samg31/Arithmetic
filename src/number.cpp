@@ -24,8 +24,8 @@ Number& Number::operator=( int rhs )
     int i = 0;
     while( rhs )
     {
-	mDigits[i] = rhs % 2;
-	rhs /= 2;
+	mDigits[i] = rhs % mBase;
+	rhs /= mBase;
 	++i;
     }
 }
