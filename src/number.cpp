@@ -95,9 +95,9 @@ Number& Number::operator-=( const Number& rhs )
 	    mDigits[i] -= ( rhs.mDigits[i] + borrow );
 	    borrow = 1;
 	}
-
     }
-    
+
+    return *this;
 }
 
 bool Number::operator==( Number const& rhs ) const
