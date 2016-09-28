@@ -85,25 +85,22 @@ Number& Number::operator-=( const Number& rhs )
 {
     int lSigBit = FindSigFigs();
     int rSigBit = rhs.FindSigFigs();
-    int max = std::max( lSigBit, rSigBit );
-    int temp[ max ];
     int borrow = 0;
 
-    for( int i = 0; i < max; ++i )
-	temp[i] = rhs.mDigits[i];
-
-    for( int i = 0; i < max; ++i )
+    for( int i = 0; i < std::max( lSigBit, rSigBit ); ++i )
     {
-	if( mDigits[i] >= temp[i] )
+	if( mDigits[i] >= ( rhs.mDigits[i] + borrow ) )
 	{
-	    mDigits[i] -= temp[i];
+	    mDigits[i] -= ( rhs.mDigits[i] + borrow );
+	    borrow = 0;
 	}
 	else
 	{
 	    mDigits[i] += mBase;
-	    ++temp[i+1];
-	    mDigits[i] -= temp[i];
+	    mDigits[i] -= ( rhs.mDigits[i] + borrow );
+	    borrow = 1;
 	}
+
     }
     
 }
