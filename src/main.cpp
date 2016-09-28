@@ -6,9 +6,10 @@
 int main()
 {
     Number n, m;
-    n = 12;
+    n = 17;
     m = 2;
     n -= m;
     n.Print();
     return 0; 
 }
+

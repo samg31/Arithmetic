@@ -85,27 +85,27 @@ Number& Number::operator-=( const Number& rhs )
 {
     int lSigBit = FindSigFigs();
     int rSigBit = rhs.FindSigFigs();
+    int max = std::max( lSigBit, rSigBit );
+    int temp[ max ];
     int borrow = 0;
 
-    for( int i = 0; i < std::max( lSigBit, rSigBit ); ++i )
+    for( int i = 0; i < max; ++i )
+	temp[i] = rhs.mDigits[i];
+
+    for( int i = 0; i < max; ++i )
     {
-	if( mDigits[i] > rhs.mDigits[i] )
+	if( mDigits[i] >= temp[i] )
 	{
-	    mDigits[i] = mDigits[i] - rhs.mDigits[i];
-	}
-	else if( mDigits[i] == rhs.mDigits[i] )
-	{
-	    mDigits[i] = 0;
+	    mDigits[i] -= temp[i];
 	}
 	else
 	{
-	    borrow = mDigits[i+1];
-	    --mDigits[i+1];
-	    mDigits[i] += borrow * mBase;
-	    mDigits[i] -= rhs.mDigits[i];
-	    borrow = 0;
+	    mDigits[i] += mBase;
+	    ++temp[i+1];
+	    mDigits[i] -= temp[i];
 	}
     }
+    
 }
 
 bool Number::operator==( Number const& rhs ) const
@@ -171,7 +171,7 @@ void Number::PushFront( int bit )
 
 void Number::Print() const
 {
-    for( int i = FindSigFigs(); i >= 0; --i )
+    for( int i = FindSigFigs() - 1; i >= 0; --i )
 	std::cout << mDigits[i];
     std::cout << std::endl;
 }

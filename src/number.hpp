@@ -36,6 +36,7 @@ public:
 
     // FUNCTIONS THAT RETURN A VALUE
     int FindSigFigs() const;
+    Number& Sub( Number rhs );
 
     // FUNCTIONS THAT RETURN VOID
     void PushFront( int bit );
