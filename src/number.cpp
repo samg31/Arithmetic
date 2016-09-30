@@ -202,45 +202,19 @@ int Number::FindSigFigs() const
 Number Number::BaselessDiv2()
 {
     int sig = FindSigFigs();
-    bool oddEncountered = false;
+    int carry = 0;
     Number n;
-    
-    if( mBase % 2 == 0 )
-    {
-	for( int i = sig; i > 0; --i )
-	{
-	    if( mDigits[i] % 2 == 0 )
-	    {
-		n.mDigits[i] = mDigits[i-1] / 2;
-	    }
-	    else
-	    {
-		if( mDigits[i-1] != 0 &&  mDigits[i-1] != 1 )
-		{
-		    if( mDigits[i-1] % 2 == 0 )
-			n.mDigits[i] = mBase - (mBase - 1)%(mDigits[i-1]);
-		    else
-			n.mDigits[i] = mBase - (mBase - 1)%(mDigits[i-1] + 1);
-		}
-		else
-		{
-		    n.mDigits[i] = mBase / 2;
-		}
-	    }
-	
-	}
-    }
-    else
-    {
-	 Number m;
-	 m = 10;
-	 for( int j = 0; j < mBase / 2 + 1; ++j )
-	     n += m;
-    }
 
-    n >> 1;
+    for( int i = sig - 1; i >= 0; --i )
+    {
+	int temp = mDigits[i] + mBase*carry;
+	n.mDigits[i] = temp / 2;
+	if( temp % 2 == 0 )
+	    carry = 0;
+	else
+	    carry = 1;
+    }
     return n;
-
 }
 
 Number Number::BaselessMul2()
