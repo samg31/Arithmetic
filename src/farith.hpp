@@ -72,12 +72,12 @@ N mul( N num1, N num2 )
 {
     if( num2 == 1 )
 	return num1;
-    if( even<Number, int>( num2 ) )
-	return mul<Number, int>( lshift<Number>( num1, 1 ),
-				 rshift<Number>( num2, 1 ) );
+    if( even<N, D>( num2 ) )
+	return mul<N, D>( lshift<N>( num1, 1 ),
+				 rshift<N>( num2, 1 ) );
     else
-	return mul<Number, int>( add<Number, int>( num1, lshift<Number>(num1, 1) ),
-		    rshift<Number>( num2, 1 ) );
+	return mul<N, D>( add<N, D>( num1, lshift<N>(num1, 1) ),
+		    rshift<N>( num2, 1 ) );
 
 }
 
@@ -87,7 +87,7 @@ N div( N num1, N num2 )
     if( num1 < num2 )
 	return N( 0 );
     else
-	return add<Number, int>( div<Number, int>( sub<Number, int>( num1, num2 ), num2 ), N( 1 ) );
+	return add<N, D>( div<N, D>( sub<N, D>( num1, num2 ), num2 ), N( 1 ) );
     
 }
 
