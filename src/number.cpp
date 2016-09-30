@@ -13,10 +13,25 @@ Number::Number()
 {
 }
 
-Number& Number::operator=( Number rhs )
+Number::Number( const Number& rhs )
+    :mDigits( new unsigned int[PRECISION]() )
 {
     for( int i = 0; i < PRECISION; ++i )
+    {
 	mDigits[i] = rhs.mDigits[i];
+    }
+}
+
+Number::Number( int value )
+    :mDigits( new unsigned int[PRECISION]() )
+{
+    int i = 0;
+    while( value )
+    {
+	mDigits[i] = value % mBase;
+	value /= mBase;
+	++i;
+    }    
 }
 
 Number& Number::operator=( int rhs )
@@ -28,6 +43,18 @@ Number& Number::operator=( int rhs )
 	rhs /= mBase;
 	++i;
     }
+}
+
+Number& Number::operator=( Number rhs )
+{
+    for( int i = 0; i < PRECISION; ++i )
+	mDigits[i] = rhs.mDigits[i];
+    return *this;
+}
+
+unsigned int& Number::operator[]( const int index )
+{
+    return mDigits[index];
 }
 
 Number& Number::operator<<( int rhs )
@@ -63,15 +90,16 @@ Number& Number::operator+=( const Number& rhs )
     for( i = 0; i < std::max( lSigBit, rSigBit ); ++i )
     {
 	int temp = mDigits[i] + rhs.mDigits[i] + carry;
+	carry = 0;
 	if( temp < mBase )
 	    mDigits[i] = temp;
 	else
 	{
-	    mDigits[i] = mBase - temp;
+	    mDigits[i] = temp - mBase;
 	    carry = temp / mBase;
 	}
     }
-    mDigits[i] = carry;
+   mDigits[i] = carry;
 
     return *this;
 }
@@ -108,6 +136,17 @@ bool Number::operator==( Number const& rhs ) const
     return true;
 }
 
+bool Number::operator==( int rhs ) const
+{
+    Number n;
+    n = rhs;
+    int lSigBit = FindSigFigs();
+    int rSigBit = n.FindSigFigs();
+    for( int i = 0; i < std::max( lSigBit, rSigBit ); ++i )
+	if( mDigits[i] != n.mDigits[i] ) return false;
+    return true;
+}
+
 bool Number::operator!=( Number const& rhs ) const
 {
     return !( *this == rhs );
@@ -118,11 +157,13 @@ bool Number::operator>( Number const& rhs ) const
     int lSigBit = FindSigFigs() - 1;
     int rSigBit = rhs.FindSigFigs() - 1;
 
-    if( lSigBit > rSigBit )
+    if( lSigBit >= rSigBit )
+    {
 	for( int i = lSigBit; i > 0; --i )
 	    if( mDigits[i] > rhs.mDigits[i] )
 		return true;
-    if( rSigBit > lSigBit )
+    }
+    else if( rSigBit > lSigBit )
     	for( int i = rSigBit; i > 0; --i )
 	    if( rhs.mDigits[i] > mDigits[i] )
 		return false;
@@ -145,11 +186,86 @@ bool Number::operator<=( Number const& rhs ) const
     return !( *this > rhs );
 }
 
+const unsigned int Number::operator[]( int index ) const
+{
+    return mDigits[index];
+}
+
 int Number::FindSigFigs() const
 {
     for( int i = PRECISION - 1; i >= 0; --i )
 	if( mDigits[i] != 0 )
 	    return i + 1;
+    return 1;
+}
+
+Number Number::BaselessDiv2()
+{
+    int sig = FindSigFigs();
+    bool oddEncountered = false;
+    Number n;
+    
+    if( mBase % 2 == 0 )
+    {
+	for( int i = sig; i > 0; --i )
+	{
+	    if( mDigits[i] % 2 == 0 )
+	    {
+		n.mDigits[i] = mDigits[i-1] / 2;
+	    }
+	    else
+	    {
+		if( mDigits[i-1] != 0 &&  mDigits[i-1] != 1 )
+		{
+		    if( mDigits[i-1] % 2 == 0 )
+			n.mDigits[i] = mBase - (mBase - 1)%(mDigits[i-1]);
+		    else
+			n.mDigits[i] = mBase - (mBase - 1)%(mDigits[i-1] + 1);
+		}
+		else
+		{
+		    n.mDigits[i] = mBase / 2;
+		}
+	    }
+	
+	}
+    }
+    else
+    {
+	 Number m;
+	 m = 10;
+	 for( int j = 0; j < mBase / 2 + 1; ++j )
+	     n += m;
+    }
+
+    n >> 1;
+    return n;
+
+}
+
+Number Number::BaselessMul2()
+{
+    int sig = FindSigFigs();
+    Number n;
+
+    for( int i = sig - 1; i >= 0; --i )
+    {
+	n.mDigits[i] = mDigits[i] * 2;
+	if( n.mDigits[i] >= mBase )
+	{
+	    n.mDigits[i] -= mBase;
+	    ++n.mDigits[i + 1];
+	}
+    }
+
+    return n;
+}
+
+Number Number::Mul( Number n, int x )
+{
+    if( x == 1 ) return n;
+    //if( !(x % 2) ) add( n += n, n.BaselessDiv2() );
+    else n;
 }
 
 void Number::PushFront( int bit )
